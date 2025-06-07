@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT 工具箱 | 提升您的AI工作流</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>ChatGPT 工具箱</h1>
+            <p>精选AI工具，提升您的工作效率与创作流程</p>
+            <div class="search-container">
+                <input type="text" id="toolSearch" placeholder="搜索工具..." onkeyup="searchTools()">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+        </div>
+    </header>
+
+    <nav class="category-nav">
+        <ul>
+            <li><a href="#browser-plugins" class="active">浏览器插件</a></li>
+            <li><a href="#academic">学术与研究</a></li>
+            <li><a href="#content-creation">内容创作</a></li>
+            <li><a href="#workflow">工作流增强</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="browser-plugins" class="toolbox-category">
+            <div class="category-header">
+                <h2>浏览器插件</h2>
+                <p>增强您的浏览体验，提高ChatGPT使用效率</p>
+            </div>
+            <div class="tool-cards">
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <h3>WebChatGPT</h3>
+                        <div class="rating">★★★★★</div>
+                    </div>
+                    <p>为ChatGPT添加网络搜索功能，让AI回答更加准确且基于最新信息。</p>
+                    <div class="tool-meta">
+                        <a href="https://www.webchatgpt.app/" class="tool-link" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> 访问工具
+                        </a>
+                        <div class="tags">
+                            <span>网络搜索</span>
+                            <span>信息增强</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <h3>ChatGPT for Google</h3>
+                        <div class="rating">★★★★☆</div>
+                    </div>
+                    <p>在Google搜索结果旁边显示ChatGPT回答，节省时间并提供更全面的信息。</p>
+                    <div class="tool-meta">
+                        <a href="https://chrome.google.com/webstore/detail/chatgpt-for-google/jgjaeacdkonaoafenlfkkkmbaopkbilf" class="tool-link" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> 访问工具
+                        </a>
+                        <div class="tags">
+                            <span>搜索增强</span>
+                            <span>信息对比</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="academic" class="toolbox-category">
+            <div class="category-header">
+                <h2>学术与研究</h2>
+                <p>提升您的学术写作与研究效率</p>
+            </div>
+            <div class="tool-cards">
+                <div class="tool-card featured">
+                    <div class="tool-header">
+                        <h3>Research GPT</h3>
+                        <div class="rating">★★★★★</div>
+                    </div>
+                    <p>专为学术研究优化的AI助手，提供论文润色、参考文献格式化和研究方法建议。</p>
+                    <div class="tool-meta">
+                        <a href="#" class="tool-link" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> 访问工具
+                        </a>
+                        <div class="tags">
+                            <span>学术</span>
+                            <span>论文</span>
+                            <span>研究</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="content-creation" class="toolbox-category">
+            <div class="category-header">
+                <h2>内容创作</h2>
+                <p>提升您的创作效率与内容质量</p>
+            </div>
+            <div class="tool-cards">
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <h3>Whisper转录助手</h3>
+                        <div class="rating">★★★★☆</div>
+                    </div>
+                    <p>基于OpenAI Whisper模型的音频转文字工具，支持多语言转录和字幕生成。</p>
+                    <div class="tool-meta">
+                        <a href="#" class="tool-link" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> 访问工具
+                        </a>
+                        <div class="tags">
+                            <span>音频</span>
+                            <span>转录</span>
+                            <span>字幕</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <h3>双语内容生成器</h3>
+                        <div class="rating">★★★★★</div>
+                    </div>
+                    <p>一键生成中英双语内容，适合创作国际化文章、教程和营销材料。</p>
+                    <div class="tool-meta">
+                        <a href="#" class="tool-link" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> 访问工具
+                        </a>
+                        <div class="tags">
+                            <span>双语</span>
+                            <span>翻译</span>
+                            <span>内容创作</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="workflow" class="toolbox-category">
+            <div class="category-header">
+                <h2>工作流增强</h2>
+                <p>优化您的日常工作流程</p>
+            </div>
+            <div class="tool-cards">
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <h3>GPT工作流SOP生成器</h3>
+                        <div class="rating">★★★★★</div>
+                    </div>
+                    <p>帮助您创建标准操作流程(SOP)，将ChatGPT整合到您现有的工作流中。</p>
+                    <div class="tool-meta">
+                        <a href="#" class="tool-link" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> 访问工具
+                        </a>
+                        <div class="tags">
+                            <span>SOP</span>
+                            <span>工作流</span>
+                            <span>效率</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>关于我们</h3>
+                <p>ChatGPT工具箱致力于收集和分享最实用的AI工具，帮助用户提升工作效率。</p>
+            </div>
+            <div class="footer-section">
+                <h3>联系方式</h3>
+                <p><i class="fas fa-envelope"></i> contact@example.com</p>
+            </div>
+            <div class="footer-section">
+                <h3>关注我们</h3>
+                <div class="social-icons">
+                    <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-github"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2024 ChatGPT工具箱. 由 Trae AI 强力驱动.</p>
+        </div>
+    </footer>
+
+    <script>
+    function searchTools() {
+        const input = document.getElementById('toolSearch');
+        const filter = input.value.toUpperCase();
+        const toolCards = document.querySelectorAll('.tool-card');
+        
+        toolCards.forEach(card => {
+            const title = card.querySelector('h3').textContent;
+            const description = card.querySelector('p').textContent;
+            const tags = Array.from(card.querySelectorAll('.tags span')).map(tag => tag.textContent);
+            
+            if (title.toUpperCase().indexOf(filter) > -1 || 
+                description.toUpperCase().indexOf(filter) > -1 ||
+                tags.some(tag => tag.toUpperCase().indexOf(filter) > -1)) {
+                card.style.display = "";
+            } else {
+                card.style.display = "none";
+            }
+        });
+    }
+
+    // 导航栏激活状态切换
+    document.addEventListener('DOMContentLoaded', function() {
+        const navLinks = document.querySelectorAll('.category-nav a');
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                navLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    });
+    </script>
+</body>
+</html>
