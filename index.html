@@ -1,430 +1,268 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI 助手入口</title>
-  <style>
-    :root {
-      --bg: #0b1020;
-      --bg-soft: #131a30;
-      --card: rgba(255, 255, 255, 0.08);
-      --card-border: rgba(255, 255, 255, 0.12);
-      --text: #eef2ff;
-      --text-soft: rgba(238, 242, 255, 0.78);
-      --gold: #f3c86b;
-      --gold-light: #ffe6a6;
-      --blue: #2f80ff;
-      --blue-light: #7db3ff;
-      --shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
-      --radius: 22px;
-      --max-width: 1180px;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at 15% 20%, rgba(243, 200, 107, 0.16), transparent 22%),
-        radial-gradient(circle at 85% 18%, rgba(47, 128, 255, 0.18), transparent 25%),
-        radial-gradient(circle at 50% 100%, rgba(255, 255, 255, 0.06), transparent 35%),
-        linear-gradient(180deg, #0a0f1f 0%, #121933 55%, #0b1020 100%);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    body::before,
-    body::after {
-      content: "";
-      position: fixed;
-      inset: auto;
-      width: 320px;
-      height: 320px;
-      border-radius: 50%;
-      filter: blur(80px);
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.32;
-    }
-
-    body::before {
-      top: -80px;
-      left: -100px;
-      background: rgba(243, 200, 107, 0.22);
-    }
-
-    body::after {
-      right: -100px;
-      bottom: -100px;
-      background: rgba(47, 128, 255, 0.18);
-    }
-
-    .page-shell {
-      position: relative;
-      z-index: 1;
-      width: min(100%, var(--max-width));
-      margin: 0 auto;
-      padding: 72px 20px 100px;
-    }
-
-    #ai-entry {
-      position: relative;
-      padding: 42px 24px 32px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 30px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
-      backdrop-filter: blur(12px);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    #ai-entry::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), transparent 38%, rgba(243, 200, 107, 0.05));
-      pointer-events: none;
-    }
-
-    .section-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 18px;
-      padding: 8px 14px;
-      border: 1px solid rgba(243, 200, 107, 0.28);
-      border-radius: 999px;
-      background: rgba(243, 200, 107, 0.08);
-      color: var(--gold-light);
-      font-size: 14px;
-      letter-spacing: 1px;
-      backdrop-filter: blur(8px);
-    }
-
-    .section-title {
-      margin: 0;
-      font-size: clamp(30px, 5vw, 52px);
-      line-height: 1.15;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-    }
-
-    .section-body {
-      max-width: 760px;
-      margin: 18px 0 0;
-      font-size: 17px;
-      line-height: 1.9;
-      color: var(--text-soft);
-    }
-
-    .ai-entry-cards {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 20px;
-      margin-top: 34px;
-    }
-
-    .ai-entry-card {
-      position: relative;
-      padding: 24px;
-      border-radius: var(--radius);
-      border: 1px solid var(--card-border);
-      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.05));
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
-      transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
-      overflow: hidden;
-    }
-
-    .ai-entry-card::after {
-      content: "";
-      position: absolute;
-      inset: auto -40px -40px auto;
-      width: 140px;
-      height: 140px;
-      background: radial-gradient(circle, rgba(255,255,255,0.12), transparent 65%);
-      pointer-events: none;
-    }
-
-    .ai-entry-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.26);
-      border-color: rgba(243, 200, 107, 0.26);
-    }
-
-    .ai-entry-card-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 64px;
-      padding: 7px 12px;
-      margin-bottom: 18px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.10);
-      color: var(--gold-light);
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      border: 1px solid rgba(255, 255, 255, 0.10);
-    }
-
-    .ai-entry-card-icon {
-      font-size: 34px;
-      line-height: 1;
-      margin-bottom: 14px;
-    }
-
-    .ai-entry-card-title {
-      font-size: 23px;
-      font-weight: 800;
-      line-height: 1.35;
-      margin-bottom: 10px;
-    }
-
-    .ai-entry-card-sub {
-      font-size: 15px;
-      line-height: 1.85;
-      color: var(--text-soft);
-      min-height: 84px;
-      margin-bottom: 18px;
-    }
-
-    .ai-entry-card-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px 18px;
-      border-radius: 999px;
-      text-decoration: none;
-      font-size: 15px;
-      font-weight: 700;
-      color: #0d1325;
-      background: linear-gradient(135deg, var(--gold-light), var(--gold));
-      box-shadow: 0 10px 22px rgba(243, 200, 107, 0.24);
-      transition: transform 0.22s ease, box-shadow 0.22s ease;
-    }
-
-    .ai-entry-card-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 14px 28px rgba(243, 200, 107, 0.32);
-    }
-
-    .ai-bubble-hint {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: 28px;
-      padding: 15px 18px;
-      border-radius: 18px;
-      background: rgba(47, 128, 255, 0.10);
-      border: 1px solid rgba(125, 179, 255, 0.18);
-      color: #dce9ff;
-      font-size: 14px;
-      line-height: 1.7;
-      text-align: center;
-    }
-
-    .floating-bubble {
-      position: fixed;
-      right: 26px;
-      bottom: 26px;
-      z-index: 30;
-      width: 68px;
-      height: 68px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      background: linear-gradient(135deg, #49a2ff, #215eff);
-      color: white;
-      box-shadow: 0 18px 30px rgba(33, 94, 255, 0.35);
-      border: 1px solid rgba(255,255,255,0.18);
-      transition: transform 0.22s ease, box-shadow 0.22s ease;
-      animation: pulse 2.4s infinite;
-    }
-
-    .floating-bubble:hover {
-      transform: translateY(-3px) scale(1.03);
-      box-shadow: 0 22px 38px rgba(33, 94, 255, 0.42);
-    }
-
-    .floating-bubble svg {
-      width: 31px;
-      height: 31px;
-      fill: currentColor;
-    }
-
-    .floating-bubble-label {
-      position: fixed;
-      right: 104px;
-      bottom: 40px;
-      z-index: 29;
-      max-width: 260px;
-      padding: 12px 14px;
-      border-radius: 14px;
-      background: rgba(12, 18, 36, 0.92);
-      border: 1px solid rgba(125, 179, 255, 0.26);
-      color: #eaf2ff;
-      font-size: 13px;
-      line-height: 1.6;
-      box-shadow: 0 12px 28px rgba(0,0,0,0.26);
-      backdrop-filter: blur(12px);
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(22px);
-      transition: opacity 0.72s ease, transform 0.72s ease;
-      will-change: opacity, transform;
-    }
-
-    .reveal.is-visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(47, 128, 255, 0.38), 0 18px 30px rgba(33, 94, 255, 0.35); }
-      70% { box-shadow: 0 0 0 14px rgba(47, 128, 255, 0), 0 18px 30px rgba(33, 94, 255, 0.35); }
-      100% { box-shadow: 0 0 0 0 rgba(47, 128, 255, 0), 0 18px 30px rgba(33, 94, 255, 0.35); }
-    }
-
-    @media (max-width: 900px) {
-      .page-shell {
-        padding-top: 44px;
-        padding-bottom: 110px;
-      }
-
-      #ai-entry {
-        padding: 28px 18px 24px;
-        border-radius: 24px;
-      }
-
-      .ai-entry-cards {
-        grid-template-columns: 1fr;
-      }
-
-      .ai-entry-card-sub {
-        min-height: auto;
-      }
-
-      .floating-bubble-label {
-        display: none;
-      }
-    }
-
-    @media (max-width: 560px) {
-      .section-body {
-        font-size: 15px;
-      }
-
-      .ai-entry-card {
-        padding: 20px;
-      }
-
-      .ai-entry-card-title {
-        font-size: 20px;
-      }
-
-      .floating-bubble {
-        width: 60px;
-        height: 60px;
-        right: 18px;
-        bottom: 18px;
-      }
-    }
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="姜湉的个人学术网站，关注高校思想政治教育、音乐教育数字化、人工智能与心理育人。">
+  <meta name="theme-color" content="#153f35">
+  <title>姜湉｜音乐教育、人工智能与高校育人</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
 </head>
 <body>
-  <main class="page-shell">
-    <!-- AI ENTRY -->
-    <section id="ai-entry">
-      <div class="section-label" style="position:relative;z-index:1;">立即体验</div>
-      <h2 class="section-title reveal" style="position:relative;z-index:1;">四大 AI 助手<br>随时为你服务</h2>
-      <p class="section-body reveal" style="position:relative;z-index:1;">
-        所有助手均无需注册，点击即可直接对话。点击右下角 <strong style="color:var(--gold-light);">蓝色气泡按钮</strong> 可随时唤出音乐疗愈伙伴。
-      </p>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
 
-      <div class="ai-entry-cards reveal">
-        <div class="ai-entry-card">
-          <div class="ai-entry-card-badge">核心</div>
-          <div class="ai-entry-card-icon">🎵</div>
-          <div class="ai-entry-card-title">音乐疗愈学习伙伴</div>
-          <div class="ai-entry-card-sub">根据情绪状态智能推荐音乐，三阶段疗愈资源，24 小时陪伴支持，分级响应风险预警</div>
-          <a href="https://cloud.fastgpt.io/chat/share?shareId=yxYBy0xzKReJQgoPY4iJhyQ7" target="_blank" class="ai-entry-card-btn">立即对话 →</a>
+  <header class="site-header">
+    <div class="nav-shell">
+      <a class="brand" href="#home" aria-label="返回首页">
+        <span class="brand-mark">姜</span>
+        <span>
+          <strong>姜湉</strong>
+          <small>JIANG TIAN</small>
+        </span>
+      </a>
+      <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav">
+        <span></span><span></span><span></span>
+        <span class="sr-only">打开导航</span>
+      </button>
+      <nav id="site-nav" class="site-nav" aria-label="主导航">
+        <a href="#articles">专业文章</a>
+        <a href="#projects">项目与研究</a>
+        <a href="#lectures">课程与讲座</a>
+        <a href="#footprints">活动与足迹</a>
+        <a href="#achievements">著作与成果</a>
+        <a href="#about">关于我</a>
+        <a href="#contact">联系我</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section id="home" class="hero section">
+      <div class="hero-copy reveal">
+        <p class="eyebrow">EDUCATION · MUSIC · AI</p>
+        <h1>让技术理解教育，<br>让音乐回应成长。</h1>
+        <p class="hero-lead">姜湉，广东第二师范学院音乐学院辅导员、讲师。长期从事高校思想政治教育与音乐教育数字化研究，探索“AI＋美育”背景下的育人创新路径。</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#projects">查看研究项目</a>
+          <a class="text-link" href="#about">了解我的经历 <span aria-hidden="true">→</span></a>
         </div>
-
-        <div class="ai-entry-card">
-          <div class="ai-entry-card-badge">学工</div>
-          <div class="ai-entry-card-icon">🎓</div>
-          <div class="ai-entry-card-title">二师小导</div>
-          <div class="ai-entry-card-sub">数字辅导员，解答学生事务、政策咨询、校园生活等各类问题，随时提供专业引导</div>
-          <a href="https://cloud.fastgpt.io/chat/share?shareId=g6GMMm7qTYnlhZklKTkXy0js" target="_blank" class="ai-entry-card-btn">立即对话 →</a>
+        <dl class="hero-stats" aria-label="个人成果概览">
+          <div><dt>7年</dt><dd>高校学生工作实践</dd></div>
+          <div><dt>10余篇</dt><dd>公开发表论文文章</dd></div>
+          <div><dt>3项</dt><dd>省级思政论文与案例获奖</dd></div>
+        </dl>
+      </div>
+      <div class="portrait-wrap reveal">
+        <div class="portrait-frame">
+          <img src="assets/jiang-tian.jpg" alt="姜湉个人肖像" width="576" height="768">
         </div>
+        <p class="portrait-note"><span>当前关注</span> 人工智能赋能音乐教育、乡村教育数字化转型、师范生心理育人</p>
+      </div>
+    </section>
 
-        <div class="ai-entry-card">
-          <div class="ai-entry-card-badge">创作</div>
-          <div class="ai-entry-card-icon">🎼</div>
-          <div class="ai-entry-card-title">歌曲创作助手</div>
-          <div class="ai-entry-card-sub">AI 辅助歌词创作与旋律构思，将情绪转化为音乐作品，激发音乐创造力</div>
-          <a href="https://cloud.fastgpt.io/chat/share?shareId=dStA9ijCqvfvqMPB7VCjxlFC" target="_blank" class="ai-entry-card-btn">立即对话 →</a>
+    <section class="research-strip" aria-label="研究方向">
+      <div class="section research-strip-inner">
+        <p>研究方向</p>
+        <ul>
+          <li>AI＋美育</li>
+          <li>高校思想政治教育</li>
+          <li>音乐教育数字化</li>
+          <li>心理育人</li>
+          <li>乡村教育转型</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="articles" class="section block-section">
+      <div class="section-heading reveal">
+        <div>
+          <p class="eyebrow">WRITING & INSIGHTS</p>
+          <h2>专业文章</h2>
         </div>
+        <p>记录教育数字化实践、学术研究与一线育人观察。栏目结构已建立，后续可继续补充全文或外部发表链接。</p>
+      </div>
+      <div class="filter-bar reveal" role="group" aria-label="筛选文章">
+        <button class="filter active" type="button" data-filter="all">全部</button>
+        <button class="filter" type="button" data-filter="practice">技术实践</button>
+        <button class="filter" type="button" data-filter="resources">资源分享</button>
+        <button class="filter" type="button" data-filter="research">学习研究</button>
+        <button class="filter" type="button" data-filter="theory">理论思考</button>
+        <button class="filter" type="button" data-filter="notes">随笔</button>
+      </div>
+      <div class="article-list">
+        <article class="article-feature reveal" data-category="research theory">
+          <div>
+            <p class="article-meta"><span>理论思考</span><time datetime="2024-04-19">2024.04.19</time></p>
+            <h3>数据要素赋能乡村音乐教育的应用探索</h3>
+            <p>聚焦数据要素在乡村音乐教育、教育评价改革及中小学实践中的应用，由《羊城晚报》理论版刊发。</p>
+          </div>
+          <span class="publication">《羊城晚报》</span>
+        </article>
+        <article class="article-row reveal" data-category="practice research">
+          <p class="article-meta"><span>技术实践</span><time datetime="2024">2024</time></p>
+          <div><h3>智能体赋能广东乡村音乐教育</h3><p>第十四届全国思想政治教育高端论坛入选会议论文。</p></div>
+          <span class="arrow" aria-hidden="true">↗</span>
+        </article>
+        <article class="article-row reveal" data-category="theory research">
+          <p class="article-meta"><span>学习研究</span><time datetime="2024">2024</time></p>
+          <div><h3>红色资源融入师范生思政课程</h3><p>高校党史教育研讨会入选会议论文。</p></div>
+          <span class="arrow" aria-hidden="true">↗</span>
+        </article>
+        <article class="article-row reveal" data-category="practice theory">
+          <p class="article-meta"><span>理论思考</span><time datetime="2024">2024</time></p>
+          <div><h3>思政引领构建“三全育人”数智化学工路径探索</h3><p>以师范大学音乐学院为例，获广东省高校思想政治工作优秀论文。</p></div>
+          <span class="arrow" aria-hidden="true">↗</span>
+        </article>
+        <article class="article-row reveal" data-category="practice research">
+          <p class="article-meta"><span>技术实践</span><time datetime="2024">2024</time></p>
+          <div><h3>教育数字化背景下学生工作探索</h3><p>发表于《教育理论与研究》，关注音乐学院学生工作的数字化改革。</p></div>
+          <span class="arrow" aria-hidden="true">↗</span>
+        </article>
+        <article class="article-row reveal" data-category="resources notes">
+          <p class="article-meta"><span>资源分享</span><time datetime="2024">2024</time></p>
+          <div><h3>数据要素赋能广东乡村教育</h3><p>第十九届南方改革论坛“南方改革杯”优秀论文。</p></div>
+          <span class="arrow" aria-hidden="true">↗</span>
+        </article>
+      </div>
+    </section>
 
-        <div class="ai-entry-card">
-          <div class="ai-entry-card-badge">AI 赋能</div>
-          <div class="ai-entry-card-icon">🤖</div>
-          <div class="ai-entry-card-title">AI 赋能教学设计助手</div>
-          <div class="ai-entry-card-sub">以 AI 工具辅助教学设计全流程，生成教案框架、活动方案与评价量规，提升教学效能</div>
-          <a href="https://cloud.fastgpt.io/chat/share?shareId=vDtNf3XnE9s3VBOYfhwXALW0" target="_blank" class="ai-entry-card-btn">立即对话 →</a>
+    <section id="projects" class="project-section">
+      <div class="section">
+        <div class="section-heading light reveal">
+          <div><p class="eyebrow">PROJECTS & RESEARCH</p><h2>项目与研究</h2></div>
+          <p>围绕人工智能、音乐疗愈与乡村音乐教育持续开展项目研究和育人实践。</p>
+        </div>
+        <div class="project-layout">
+          <article class="featured-project reveal">
+            <p class="project-year">2024 · 省级</p>
+            <h3>“百千万工程”背景下基于智能驱动的广东乡村音乐教育数字化转型实践研究</h3>
+            <p>广东省教育科学规划课题（高等教育专项），项目编号 2024GXJK152。关注数字教育智能体在乡村音乐教育数字化转型中的应用。</p>
+            <div class="project-tags"><span>乡村音乐教育</span><span>数字化转型</span><span>智能体</span></div>
+          </article>
+          <div class="project-timeline">
+            <article class="timeline-item reveal"><time>2025</time><div><h3>“鼓韵新声”瑶族长鼓舞数字化传承</h3><p>大学生创新创业项目，聚焦非遗数字化传承与文创产品开发。</p></div></article>
+            <article class="timeline-item reveal"><time>2025</time><div><h3>音乐疗愈与人工智能融合的师范生心理育人模式</h3><p>广东第二师范学院校内科研项目（学生工作专项）。</p></div></article>
+            <article class="timeline-item reveal"><time>2025</time><div><h3>“心灵作曲家”AI式歌曲创编与疗愈研究</h3><p>广东第二师范学院易班第五批网络育人项目。</p></div></article>
+            <article class="timeline-item reveal"><time>2024</time><div><h3>数据要素赋能乡村音乐教育</h3><p>大学生创新创业项目及广东省党建后资助项目。</p></div></article>
+            <article class="timeline-item reveal"><time>2023</time><div><h3>人工智能辅助下的大学生心理健康教育途径探索</h3><p>广东省普通高校青年创新人才项目，项目编号 2023WQNCX055。</p></div></article>
+          </div>
         </div>
       </div>
+    </section>
 
-      <div class="ai-bubble-hint reveal">
-        <span>💡 页面右下角蓝色闪电图标 · 点击随时唤出音乐疗愈学习伙伴</span>
+    <section id="lectures" class="section block-section">
+      <div class="section-heading reveal">
+        <div><p class="eyebrow">COURSES & TALKS</p><h2>课程与讲座</h2></div>
+        <p>将研究转化为可体验的教学工具、工作坊与分享内容。</p>
+      </div>
+      <div class="lecture-grid">
+        <article class="lecture-intro reveal">
+          <p class="serial">01</p>
+          <h3>AI＋音乐疗愈<br>实践工作坊</h3>
+          <p>通过音乐、情绪识别和智能技术，探索师范生心理育人的新方式。</p>
+          <span class="status">课程资料整理中</span>
+        </article>
+        <div class="ai-tools reveal">
+          <h3>在线 AI 实践工具</h3>
+          <a href="https://cloud.fastgpt.io/chat/share?shareId=yxYBy0xzKReJQgoPY4iJhyQ7" target="_blank" rel="noopener"><span>音乐疗愈学习伙伴</span><small>情绪陪伴与音乐资源推荐</small></a>
+          <a href="https://cloud.fastgpt.io/chat/share?shareId=g6GMMm7qTYnlhZklKTkXy0js" target="_blank" rel="noopener"><span>二师小导</span><small>学生事务与校园生活咨询</small></a>
+          <a href="https://cloud.fastgpt.io/chat/share?shareId=dStA9ijCqvfvqMPB7VCjxlFC" target="_blank" rel="noopener"><span>歌曲创作助手</span><small>歌词创作与旋律构思</small></a>
+          <a href="https://cloud.fastgpt.io/chat/share?shareId=vDtNf3XnE9s3VBOYfhwXALW0" target="_blank" rel="noopener"><span>AI 赋能教学设计助手</span><small>教案、活动与评价量规设计</small></a>
+        </div>
+      </div>
+    </section>
+
+    <section id="footprints" class="section block-section footprints-section">
+      <div class="section-heading reveal">
+        <div><p class="eyebrow">FIELD NOTES</p><h2>活动与足迹</h2></div>
+        <p>从课堂、论坛到乡村教育现场，记录研究如何在真实情境中发生。</p>
+      </div>
+      <div class="footprint-grid">
+        <article class="footprint-large reveal"><span>学术交流</span><h3>全国思想政治教育高端论坛</h3><p>会议论文《智能体赋能广东乡村音乐教育》入选。</p><time>2024</time></article>
+        <article class="footprint-small reveal"><span>实践育人</span><h3>“悦音智语”心理实践工作坊</h3><p>探索音乐师范生心理育人方式。</p><time>2024</time></article>
+        <article class="footprint-small reveal"><span>创新实践</span><h3>“新师范，我来创”AI 创作比赛</h3><p>融合美育实践与信息素养提升。</p><time>2023</time></article>
+      </div>
+      <p class="asset-note reveal">活动照片与详细报道可在后续更新中加入，当前页面先呈现可确认的活动信息。</p>
+    </section>
+
+    <section id="achievements" class="achievement-section">
+      <div class="section">
+        <div class="section-heading reveal">
+          <div><p class="eyebrow">SELECTED WORKS</p><h2>著作与成果</h2></div>
+          <p>论文发表、研究获奖和育人案例构成了持续推进教育创新的实践档案。</p>
+        </div>
+        <div class="achievement-columns">
+          <div class="achievement-group reveal">
+            <h3><span>论文与发表</span><small>Selected publications</small></h3>
+            <ol>
+              <li><time>2024</time><p>《数据要素赋能乡村音乐教育的应用探索》<small>《羊城晚报》理论版</small></p></li>
+              <li><time>2024</time><p>《教育数字化背景下学生工作探索》<small>《教育理论与研究》</small></p></li>
+              <li><time>2024</time><p>《智能体赋能广东乡村音乐教育》<small>全国思想政治教育高端论坛</small></p></li>
+              <li><time>2024</time><p>《红色资源融入师范生思政课程》<small>高校党史教育研讨会</small></p></li>
+            </ol>
+          </div>
+          <div class="achievement-group reveal">
+            <h3><span>代表性获奖</span><small>Selected awards</small></h3>
+            <ol>
+              <li><time>2024</time><p>广东省“新师范”建设优秀案例<small>音乐师范生智能素养提升“234”模式</small></p></li>
+              <li><time>2024</time><p>广东省教育评价改革征文三等奖<small>“五位一体”音乐师范生教育评价改革</small></p></li>
+              <li><time>2024</time><p>广东省高校思想政治工作优秀案例<small>“悦音智语”心理实践工作坊</small></p></li>
+              <li><time>2023</time><p>广州日报 AIGC 作品三等奖<small>《珠江华彩》《海纳百川》</small></p></li>
+            </ol>
+          </div>
+        </div>
+        <details class="more-achievements reveal">
+          <summary>展开更多成果</summary>
+          <div class="more-grid">
+            <p><strong>2024</strong> “挑战杯创青春”广东省大学生创业计划竞赛校内赛三等奖</p>
+            <p><strong>2024</strong> 广东省高校思想政治工作优秀论文</p>
+            <p><strong>2024</strong> 第十九届南方改革论坛“南方改革杯”优秀论文</p>
+            <p><strong>2023</strong> 广东省教育评价改革征文三等奖</p>
+            <p><strong>2023</strong> 广东省高校思想政治工作优秀论文</p>
+            <p><strong>荣誉</strong> 校级优秀辅导员、就业工作先进个人、优秀共产党员</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="about" class="section about-section">
+      <div class="about-title reveal">
+        <p class="eyebrow">ABOUT ME</p>
+        <h2>在教育现场，<br>寻找技术与人的连接。</h2>
+      </div>
+      <div class="about-copy reveal">
+        <p class="lead">我从事音乐学院大学生思想政治教育工作7年，长期深耕人工智能和教育数字化领域。</p>
+        <p>研究涵盖人工智能应用、音乐学科教育评估、教育数字化、乡村音乐教育与师范生心理育人。主持广东省教育科学规划（高等教育专项）、广东省青年人才项目、广东省党建后资助项目，参与省市级项目10余项。</p>
+        <p>我希望把论文中的问题带回真实课堂，也把一线教育经验转化为可分享、可验证、可持续的研究。</p>
+        <dl class="profile-facts">
+          <div><dt>任职</dt><dd>广东第二师范学院音乐学院辅导员、讲师</dd></div>
+          <div><dt>研究</dt><dd>高校思想政治教育、音乐教育数字化、人工智能与心理育人</dd></div>
+          <div><dt>实践</dt><dd>AI 教学工具、音乐疗愈工作坊、乡村音乐教育数字化</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+      <div class="section contact-inner reveal">
+        <div>
+          <p class="eyebrow">CONTACT</p>
+          <h2>交流研究，<br>共创教育实践。</h2>
+        </div>
+        <div class="contact-copy">
+          <p>欢迎围绕 AI＋美育、高校思想政治教育、音乐疗愈、乡村音乐教育数字化等主题交流合作。</p>
+          <a class="button light-button" href="https://github.com/jiangtiannbu2023" target="_blank" rel="noopener">访问 GitHub</a>
+          <small>联系邮箱与其他社交账号待补充。</small>
+        </div>
       </div>
     </section>
   </main>
 
-  <div class="floating-bubble-label">点击这里，可直接打开「音乐疗愈学习伙伴」</div>
-  <a
-    class="floating-bubble"
-    href="https://cloud.fastgpt.io/chat/share?shareId=yxYBy0xzKReJQgoPY4iJhyQ7"
-    target="_blank"
-    aria-label="打开音乐疗愈学习伙伴"
-    title="音乐疗愈学习伙伴"
-  >
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M13 2 5.5 13h4.9L9 22l9.5-12.5h-5.1L13 2z"></path>
-    </svg>
-  </a>
-
-  <script>
-    const revealElements = document.querySelectorAll('.reveal');
-
-    if ('IntersectionObserver' in window) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.12 });
-
-      revealElements.forEach((el) => observer.observe(el));
-    } else {
-      revealElements.forEach((el) => el.classList.add('is-visible'));
-    }
-  </script>
+  <footer class="site-footer">
+    <div class="section footer-inner">
+      <p><strong>姜湉</strong><br><span>音乐教育、人工智能与高校育人</span></p>
+      <p>© <span id="current-year">2026</span> Jiang Tian. Built for thoughtful education.</p>
+    </div>
+  </footer>
 </body>
 </html>
